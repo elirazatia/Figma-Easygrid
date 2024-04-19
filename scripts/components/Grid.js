@@ -55,7 +55,7 @@ function Grid(selector) {
         cellConnections = [
             {
                 type: 'merge',
-                initCell: [0,0],
+                initCell: [2,1],
                 w: 2,
                 h: 2,
             },
@@ -124,7 +124,7 @@ function Grid(selector) {
             let h = rows[cell.y]
             if (mergedCell) {
                 w = xFor(cell.x + mergedCell.w - 1) - xFor(cell.x) + columns[cell.x]
-                h = yFor(cell.y + mergedCell.h - 1) - xFor(cell.y) + rows[cell.y]
+                h = yFor(cell.y + mergedCell.h - 1) - yFor(cell.y) + rows[cell.y]
             }
 
             const td = renderCell(
@@ -179,35 +179,74 @@ function Grid(selector) {
         table.style.height = `${yFor(Math.inf)}px`
     }
 
-    // Hover effects
-    table.addEventListener('mousemove', (e) => {
 
-    })
-
-    // Cells Merge - TODO: These var names are awful.
+    let mergeCellTool = 'merge' // draw - merge
     let mergeCellSession = null
-    // let startCellIndex
-    table.addEventListener('mousedown', (e) => {
-        if (e.target?.cell == null) return console.info('Did not click on cell // REMOVE THIS WARNING')
+    const toolEvents = {
+        draw: {
+            init(initCell) { return [initCell.x, initCell.y] },
+            move(cell) {
+                const isAlreadySelected = mergeCellSession.filter(existingCell => 
+                    existingCell.x === cell.x && 
+                    existingCell.y === cell.y).length === 1
+                if (!isAlreadySelected) mergeCellSession.push(cell)
+            },
+            release() { return { type: 'draw', cells: mergeCellSession.map(cell => [cell.x, cell.y]) } }
+        },
+        merge: {
+            init(initCell) { return {
+                initCell: [initCell.x, initCell.y],
+                offsetX: 1,
+                offsetY: 1
+            } },
+            move(cell) {
+                mergeCellSession.offsetX = cell.x - mergeCellSession.initCell[0]
+                mergeCellSession.offsetY = cell.y - mergeCellSession.initCell[1]
+                console.log(mergeCellSession.offsetY)
+            },
+            release() {
+                if (mergeCellSession.offsetX === 0 && mergeCellSession.offsetY === 0)
+                    return
 
-        mergeCellSession = []
-        mergeCellSession.push(e.target.cell)
+                let initCell = mergeCellSession.initCell
+                if (mergeCellSession.offsetX < 0) { initCell[0] += mergeCellSession.offsetX }
+                if (mergeCellSession.offsetY < 0) { initCell[1] += mergeCellSession.offsetY }
+
+                const w = Math.abs(mergeCellSession.offsetX) + 1
+                const h = Math.abs(mergeCellSession.offsetY) + 1
+
+                return {
+                    type: 'merge',
+                    initCell: initCell,
+                    w: w, h: h
+                }
+            }
+        }
+    }
+
+    table.addEventListener('mousedown', (e) => {
+        // Return if not clicked down on a grid cell
+        if (e.target?.cell == null) return
+
+        // Generate initial merge session
+        mergeCellSession = toolEvents[mergeCellTool].init(e.target.cell)
     })
 
     table.addEventListener('mousemove', (e) => {
+        // Return if user is not pressing down
         if (!mergeCellSession) return
-        if (e.target?.cell == null) return console.info('Did not move to cell // REMOVE THIS WARNING')
+        if (e.target?.cell == null) return
 
-        const alreadySelected = mergeCellSession.filter(cell => 
-            cell.x === e.target.cell.x && 
-            cell.y === e.target.cell.y).length === 1
-        
-        if (!alreadySelected) mergeCellSession.push(e.target.cell)
+        // Perform tool function
+        toolEvents[mergeCellTool].move(e.target.cell)
     })
 
     table.addEventListener('mouseup', (e) => {
         // Push the connections
-        cellConnections.push({ type: 'draw', cells: mergeCellSession })
+        const newConnectionModel = toolEvents[mergeCellTool].release()
+        cellConnections.push(newConnectionModel)
+        cellConnections = cellConnections.filter(i => (i)) // Filter out the new model if it returns new - i.e. Invalid
+        console.log(cellConnections)
 
         // Clear the session and re-render
         mergeCellSession = null

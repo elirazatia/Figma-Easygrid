@@ -1,3 +1,9 @@
 - Grid UI
 - Grid connected UI
 - Connect Interactions
+- Undo / Redo
+
+
+New Features:
+- Autolayout
+- Bug Fixes
