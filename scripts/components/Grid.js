@@ -35,154 +35,64 @@ function Grid(selector) {
         return td
     }
 
-    function setCells(
-        rowCount,
-        columnCount) {
-
-        let newCells = []
-        let index = 0
-        for (let y = 0; y < rowCount; y++) {
-            for (let x = 0; x < columnCount; x++) {
-                newCells.push({ index, x, y })
-                index += 1
-            }
-        }
-
-        // Store the cells
-        cells = newCells
-
-        // Reset all connections
-        cellConnections = []
-        //     {
-        //         type: 'merge',
-        //         initCell: [2,1],
-        //         w: 2,
-        //         h: 2,
-        //     },
-        //     {
-        //         type: 'draw',
-        //         cells: [
-        //             [3,3],
-        //             [3,4]
-        //         ]
-        //     }
-        // ] // TODO: Remove test input
+    function setGridConfiguration(
+        newRows,
+        newColumns,
+        newGapX,
+        newGapY
+    ) {
+        rows = newRows
+        columns = newColumns
+        gapX = newGapX
+        gapY = newGapY
     }
 
-    function renderGrid(
-        overrideRows = null,
-        overrideColumns = null,
-        overrideGapX = null,
-        overrideGapY = null) {
-
+    function renderGrid() {
         // Clear children
         clearChildren()
 
-        // Update the rows and column stored values
-        rows = overrideRows || rows
-        columns = overrideColumns || columns
-        gapX = (overrideGapX == null) ? gapX : overrideGapX
-        gapY = (overrideGapY == null) ? gapY : overrideGapY
+        // Generate the bounds for the cells
+        const bounds = cellBoundsFromConfigurations(
+            rows,
+            columns,
+            gapX,
+            gapY,
+            cellConnections
+        )
 
-        // Ensure that setCells has been correctly called; If not - Automatically call it
-        let cellsColumnCount = Math.max(...cells.map(cell => cell.x)) + 1 // +1 as index starts at 0; and length starts at 1
-        let cellsRowCount = Math.max(...cells.map(cell => cell.y)) + 1 // See comment above
-        console.log(cellsColumnCount, cellsRowCount, columns.length, rows.length)
-        if (cellsColumnCount != columns.length || cellsRowCount != rows.length) {
-            setCells(
-                rows.length,
-                columns.length
-            )
-        }
+        console.log('with cell connections', cellConnections)
 
-        // Loop over each row
-        const rFunction = (gap) => (reducer, value) => { reducer = reducer + value + gap; return reducer } // TODO ITEM /// Remember to add GAPS
-        const xFor = (index) => columns.slice(0, index).reduce(rFunction(gapX), 0)
-        const yFor = (index) => rows.slice(0, index).reduce(rFunction(gapY), 0)
-        
-        // Split cell connectinos into their two distinct types
-        let mergedCellConnections = cellConnections.filter(connection => connection.type === 'merge')
-        let drawnCellConnections = cellConnections.filter(connection => connection.type === 'draw')
-
-        // Filters cells that are part of a larger - Merged cell
-        let visibleCells = cells.filter(cell => {
-            let isInitialCell = mergedCellConnections.filter(connection => connection.initCell[0] == cell.x && connection.initCell[1] == cell.y)
-            if (isInitialCell.length > 0) return true
-
-            let withinBounds = mergedCellConnections.filter(connection => 
-                isWithinBounds(cell.x, connection.initCell[0] + connection.w, connection.initCell[0]) &&
-                isWithinBounds(cell.y, connection.initCell[1] + connection.h, connection.initCell[1]))
-            return withinBounds.length == 0 
-        })
-
-        // Create the primary cells
-        visibleCells.forEach(cell => {
-            // Create the primary shape
-            let mergedCell = mergedCellConnections.filter(connection =>
-                connection.initCell[0] === cell.x && connection.initCell[1] === cell.y)[0]
-
-            let w = columns[cell.x]
-            let h = rows[cell.y]
-            if (mergedCell) {
-                w = xFor(cell.x + mergedCell.w - 1) - xFor(cell.x) + columns[cell.x + mergedCell.w - 1]
-                h = yFor(cell.y + mergedCell.h - 1) - yFor(cell.y) + rows[cell.y + mergedCell.h - 1]
-            }
-
+        // Insert all the bounds
+        bounds.bounds.forEach((boundContainer, boundIndex) => boundContainer.forEach(subchild => {
             const td = renderCell(
-                xFor(cell.x),
-                yFor(cell.y),
-                w,
-                h,
+                subchild.x,
+                subchild.y,
+                subchild.w,
+                subchild.h,
             )
 
             // Assign to value and insert into the table
-            td.cell = cell
-            table.appendChild(td)
-        })
-
-        // Join into shapes where needed - For drawn cells
-        drawnCellConnections.forEach(connection => connection.cells.forEach((subcell, index) => {
-            let xIndex = subcell[0]
-            let yIndex = subcell[1]
-
-            const nextSubcell = (connection.cells[index + 1])
-            if (!nextSubcell) return
-
-            let movement = {
-                x: nextSubcell[0] - xIndex,
-                y: nextSubcell[1] - yIndex
-            }
-
-            let bounds = {}
-            if (movement.x) {
-                let x = (movement.x > 0)
-                    ? xFor(xIndex) + columns[xIndex]
-                    : xFor(xIndex) - gapX
-                bounds = {
-                    h: rows[yIndex], w: gapX,
-                    x: x, y: yFor(yIndex),
-                }
-            } else {
-                let y = (movement.y > 0)
-                    ? yFor(yIndex) + rows[yIndex]
-                    : yFor(yIndex) - gapY
-                bounds = {
-                    h: gapY, w: columns[xIndex],
-                    x: xFor(xIndex), y: y,
-                }
-            }
-
-            const td = renderCell(bounds.x, bounds.y, bounds.w, bounds.h)
+            td.cell = subchild.index
+            td.setAttribute('bound-index', boundIndex)
             table.appendChild(td)
         }))
 
-        table.style.width = `${xFor(Math.inf)}px`
-        table.style.height = `${yFor(Math.inf)}px`
+        // Get the size of the table
+        table.style.width = `${bounds.xFor(Math.inf)}px`
+        table.style.height = `${bounds.yFor(Math.inf)}px`
     }
 
 
     let mergeCellTool = 'merge' // draw - merge
     let mergeCellSession = null
+
+    let __hoverEffectEl = []
+    const setHoverEffectEl = (newEls) => {
+        __hoverEffectEl.forEach(el => el.classList.remove('__hover'))
+        __hoverEffectEl = newEls
+        __hoverEffectEl.forEach(el => el.classList.add('__hover'))
+    }
+
     const toolEvents = {
         draw: {
             init(initCell) { return [initCell.x, initCell.y] },
@@ -233,7 +143,18 @@ function Grid(selector) {
         mergeCellSession = toolEvents[mergeCellTool].init(e.target.cell)
     })
 
+    table.addEventListener('mouseleave', (e) => {
+        // Remove hover effect
+        setHoverEffectEl([])
+    })
+
     table.addEventListener('mousemove', (e) => {
+        // Hover effect
+        const hoverIndex = e.target?.getAttribute('bound-index')
+        setHoverEffectEl((hoverIndex !== null)
+            ? table.querySelectorAll(`[bound-index='${hoverIndex}']`)
+            : [])
+
         // Return if user is not pressing down
         if (!mergeCellSession) return
         if (e.target?.cell == null) return
@@ -247,7 +168,6 @@ function Grid(selector) {
         const newConnectionModel = toolEvents[mergeCellTool].release()
         cellConnections.push(newConnectionModel)
         cellConnections = cellConnections.filter(i => (i)) // Filter out the new model if it returns new - i.e. Invalid
-        console.log(cellConnections)
 
         // Clear the session and re-render
         mergeCellSession = null
@@ -260,9 +180,10 @@ function Grid(selector) {
             if (!['draw', 'merge'].includes(newTool)) return console.info('Invalid tool selected in Grid()')
             mergeCellTool = newTool
         },
-        clearCombinations() {
-            setCells()
-            rerenderGrid()
-        }
+
+        setGridConfiguration,
+        set connections(newValue) {
+            cellConnections = newValue
+        },
     }
 }

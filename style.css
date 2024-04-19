@@ -114,9 +114,8 @@ img, svg { width: 22px; height: 22px; }
 }
 
 .grid-parent .grid-container .table .row { display: flex; }
-.grid-parent .grid-container .table .cell:hover {
+.grid-parent .grid-container .table .cell.__hover {
     background-color: #737c85;
-    box-shadow: 0 4px 4px 4px rgba(0,0,0,0.05);
 }
 .grid-parent .grid-container .table .cell {
     position: absolute;

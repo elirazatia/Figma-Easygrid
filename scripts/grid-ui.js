@@ -5,8 +5,8 @@ const figmaLayer = FigmaLayer('#layer')
 const grid = Grid('#grid-root')
 
 // Config options
-const columns = ConfigInput('#config-columns', '1 2 3 2 2')
-const rows = ConfigInput('#config-rows', '5')
+const columns = ConfigInput('#config-columns', '2')
+const rows = ConfigInput('#config-rows', '2')
 const gapColumn = ConfigInput('#config-column-gap', '5')
 const gapRow = ConfigInput('#config-row-gap', '5')
 
@@ -26,12 +26,13 @@ function rerenderGrid() {
     const columnElements = getDimentionsFromString(columnString, targetW)
     const rowElements = getDimentionsFromString(rowString, targetH)
 
-    grid.renderGrid(
+    grid.setGridConfiguration(
         rowElements,
         columnElements,
         gapX,
         gapY
     )
+    grid.renderGrid()
 }
 
 // Add listeners
@@ -53,8 +54,11 @@ toolSelector.observers.add(
 grid.setMergeTool('merge')
 
 // Listen for remove-merge button
-document.querySelector('#reset-merge-button').addEventListener('click', () =>
-    grid.clearCombinations())
+document.querySelector('#reset-merge-button')
+    .addEventListener('click', () => {
+        grid.connections = []
+        rerenderGrid()
+    })
 
 // Listen for saved value dropdown change
 const savedElementsDropdown = StoredLayoutDropdown(
@@ -69,6 +73,8 @@ const savedElementsDropdown = StoredLayoutDropdown(
         rows.value = newLayout.layout.rows
         gapColumn.value = newLayout.layout.gapX
         gapRow.value = newLayout.layout.gapY
+        grid.connections = newLayout.layout.connections
+
         rerenderGrid()
     },
     (newLayoutList) => {
@@ -76,16 +82,17 @@ const savedElementsDropdown = StoredLayoutDropdown(
         parent.postMessage({pluginMessage: {
             type: 'event.setLayouts',
             model: newLayoutList
-        }}, '*');
+        }}, '*')
     },
     () => {
+        // Get the active layout
         return {
             columns: columns.value,
             rows: rows.value,
             gapX: gapColumn.value,
             gapY: gapRow.value,
         }
-    } // Get the active layout
+    } 
 )
 
 // Listen for Figma messages
