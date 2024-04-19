@@ -1,0 +1,257 @@
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div class="help-screen">
+		<div class="inner-content">
+			<div class="grid-parent">
+				<header>
+					<img id="logo" src="https://assetbucket-a492924.s3.eu-west-2.amazonaws.com/logo.svg" alt="">
+				</header>
+				<div class="help-top-section">
+					<h5 class="top-row">Help Section</h5>
+					<h3>Learn To Use (Easy)grid</h3>
+				</div>
+			</div>
+			
+			<div class="help-items">
+				<assets/Help Hero.svg>
+				<h4>Basic Grids</h4>
+				<p>To create a grid, set the columns, rows, column gap, and row gap. These options determine how the grid will look, and can be previewed before adding to project in the preview area at the top of the screen. </p>
+
+				<h5>Values</h5>
+				<p>Column / row values are written as their cell sizes in whole numbers (with a pt suffix), or out of a total fraction, with the denominator of that fraction being all the numerators written added up. All cell values must be separated by a space. The value entered can also be a single number to create x amount of equally sized cells.
+
+					Column / row gaps are written as a whole number</p>
+
+				<h5>Examples</h5>
+				<p>Try the following in the column/row inputs to see how they change the grid:
+					<b><br>1 2 3 4 5<br>40pt 1<br>20pt 1 20pt<br>30pt*3 2*2 1</p></b>
+
+				<h4>Adding Grid To Project</h4>
+				<p>Once you are happy with your grid layout, you can add it into your Figma document. To do so, select the layer you want to apply the grid to, if not already selected, and click the “Apply Grid To Selected” button, you should see the grid over the selected layer, filled with the colour chosen in the “Cell Fill Colour”</p>
+
+				<h4>Merging Cells</h4>
+				<p>To create more complicated grids, you can build a custom layout by clicking on the cells (in the preview) that you want. Clicking on “Apply Grid To Selected” now would only import the cells that have been selected. You can deselect a cell by right clicking on it, and you can merge multiple cells together to create a larger tile by holding on a cell and dragging it the appropriate size.</p>
+				
+				<h4>More Help</h4>
+				<p>For more information and help, visit our website at <a target="_blank" href="https://easygrid-app.web.app/">easygrid-app.web.app</a>. Additionally, we answer all questions posted in the figma plugin comments area.</p>
+			</div>	
+		</div>
+
+		<div class="button-container-bottom" style="background-color: unset; height: 80px; padding-bottom: 16px;">
+			<div class="button-container" style="width: 60px; margin: 0 auto;">
+				<div id="close-help-button" class="button align horizontal">
+					<assets/icons/close.svg>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="body-container">
+		<div class="body-content">
+			<div class="grid-parent">
+				<header>
+					<img id="logo" src="https://assetbucket-a492924.s3.eu-west-2.amazonaws.com/logo.svg" alt="">
+				</header>
+	
+				<div id="grid-root" class="grid-container"></div>
+	
+				<div class="align horizontal center">
+					<div class="align horizontal">
+						<img id="layer-type" src="https://assetbucket-a492924.s3.eu-west-2.amazonaws.com/frame.svg" alt="">
+						<span id="layer-name">Layer Name</span>
+					</div>
+					<div class="fill"></div>
+					<div id="clear-merge" class="align horizontal">
+						<img src="assets/icons/clear.svg" alt="">
+						<span>Clear Merged Cells</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="grid-layer-info" style="
+				margin-top: -1.35em;
+				z-index: 99;
+				display: grid;
+				grid-template-columns: repeat(4, 1fr);
+				column-gap: 0.35em;
+				background-color: #f1f1f1;
+				padding: 0em 0.35em;
+				border-radius: 0.35em;
+				position: relative;">
+
+				<img src="assets/icons/arrow-up.svg" style="
+					position: absolute;
+					left: 1em;
+					bottom: 100%;
+					height: fit-content;">
+
+				<div style="position: relative;" class="align horizontal input-row">
+					<div style="position: absolute;" class="align horizontal">
+						<img src="assets/icons/x.svg" alt="">
+					</div>
+					<input readonly id="layer-x" class="fill wide-input" type="text" value="100">
+				</div>
+				<div style="position: relative;" class="align horizontal input-row">
+					<div style="position: absolute;" class="align horizontal">
+						<img src="assets/icons/y.svg" alt="">
+					</div>
+					<input readonly id="layer-y" class="fill wide-input" type="text" value="200">
+				</div>		
+				<div style="position: relative;" class="align horizontal input-row">
+					<div style="position: absolute;" class="align horizontal">
+						<img src="assets/icons/w.svg" alt="">
+					</div>
+					<input readonly id="layer-w" class="fill wide-input" type="text" value="100">
+				</div>
+				<div style="position: relative;" class="align horizontal input-row">
+					<div style="position: absolute;" class="align horizontal">
+						<img src="assets/icons/h.svg" alt="">
+					</div>
+					<input readonly id="layer-h" class="fill wide-input" type="text" value="200">
+				</div>		
+			</div>
+
+			<div class="align horizontal input-row">
+				<div class="align horizontal">
+					<img src="assets/icons/columns.svg" alt="">
+					<span>Columns</span>
+				</div>
+				<div class="fill"></div>
+				<input id="config-columns" placeholder="Try '1 30pt 2*2'" class="wide-input" type="text" value="5*2">
+			</div>
+	
+			<div class="align horizontal input-row">
+				<div class="align horizontal">
+					<img src="assets/icons/rows.svg" alt="">
+					<span>Rows</span>
+				</div>
+				<div class="fill"></div>
+				<input id="config-rows" placeholder="Try '1 15pt*2 1'" class="wide-input" type="text" value="5*2">
+			</div>
+	
+			<div class="align horizontal input-row">
+				<div class="align horizontal">
+					<img src="assets/icons/gap-x.svg" alt="">
+					<span>Column Gap (pt)</span>
+				</div>
+				<div class="fill"></div>
+				<input id="config-column-gap" placeholder="Gap (Enter Number)" type="text" value="0">
+			</div>
+	
+			<div class="align horizontal input-row">
+				<div class="align horizontal">
+					<img src="assets/icons/gap-y.svg" alt="">
+					<span>Row Gap (pt)</span>
+				</div>
+				<div class="fill"></div>
+				<input id="config-row-gap" placeholder="Gap (Enter Number)" type="text" value="0">
+			</div>
+	
+			<div class="border"></div>
+	
+			<div class="align horizontal input-row">
+				<div class="align horizontal">
+					<img src="assets/icons/fill.svg" alt="">
+					<span>Cell Fill Color</span>
+				</div>
+				<div class="fill"></div>
+				<input id="cell-fill" value="#2EEA89" type="color">
+			</div>
+	
+			<div class="align horizontal input-row">
+				<div class="align horizontal">
+					<img src="assets/icons/fill.svg" alt="">
+					<span>Autolayout Type</span>
+				</div>
+				<div class="fill"></div>
+				<select class="wide-input" id="">
+					<option value="">None</option>
+					<option value="">Wrapping Grid</option>
+					<option value="">On row</option>
+				</select>
+			</div>
+
+			<div class="align horizontal input-row">
+				<div class="align horizontal">
+					<img src="assets/icons/delete-on-close.svg" alt="">
+					<span>Replace Selected With Grid</span>
+				</div>
+				<div class="fill"></div>
+				<input id="replace-selected" type="checkbox">
+			</div>
+	
+			<div class="border"></div>
+
+			<div style="display: none;" class="new-feature-card">
+				<div class="card-close">
+					<assets/icons/close_black.svg>
+				</div>
+				<div class="card-content">
+					<span class="card-title">Whats new?</span>
+					<span class="card-subtitle">Version 1.1</span>
+					<ul>
+						<li>
+							🎛 <b>Autopopulate — </b> you can now select more then one layer to autopopulate the layout with the other selected layers / components
+						</li>
+						<li>
+							💾  <b>Saving — </b> Save your layout and reuse them in other Figma projects
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="help-button">
+				<img src="assets/icons/open.svg" alt="">
+				<span>Open help</span>
+			</div>
+
+			<div class="app-help-container">
+				<p id="app-description">To create a grid, set the columns, rows, column gap, and row gap<br>
+					<br>
+					Column / row values are written as their cell sizes in whole numbers (with a pt suffix), or out of a total fraction, with the denominator of that fraction being all the numerators written added up. All cell values must be separated by a space. The value entered can also be a single number to create x amount of equally sized cells.<br>
+					<br>
+					Try the following in the column/row inputs to see how they change the grid:<br>
+					1 2 3 4 5<br>
+					40pt 1<br>
+					20pt 1 20pt</p>
+			</div>
+		</div>
+	
+		<div class="button-container-hover">
+			<div class="button-container">
+				<div id="apply-to-element" style="flex-grow: 100" class="button colour align horizontal">
+					<assets/icons/apply-cells.svg>
+					<span>Apply To Selected</span>
+				</div>
+
+				<div id="select-saved" style="background-color: rgb(232 232 232)" class="button align horizontal">
+					<select style="width: 100%; text-align: center; margin-right: 1em;">
+						<option value="none">Saved Layouts</option>
+						<option value="current">Save Current</option>
+						<option value="current">Simple Grid</option>
+						<option value="current">4x4 Grid</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>	
+
+	<!-- Functions -->
+	<script src="scripts/functions/dimentions-from-string.js"></script>
+
+	<!-- Components -->
+	<script src="scripts/components/Observer.js"></script>
+	<script src="scripts/components/FigmaLayer.js"></script>
+	<script src="scripts/components/ConfigInput.js"></script>
+	<script src="scripts/components/Grid.js"></script>
+
+	<!-- Handlers -->
+	<script src="scripts/grid-ui.js"></script>
+</body>
