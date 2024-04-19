@@ -7,52 +7,6 @@
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<div class="help-screen">
-		<div class="inner-content">
-			<div class="grid-parent">
-				<header>
-					<img id="logo" src="https://assetbucket-a492924.s3.eu-west-2.amazonaws.com/logo.svg" alt="">
-				</header>
-				<div class="help-top-section">
-					<h5 class="top-row">Help Section</h5>
-					<h3>Learn To Use (Easy)grid</h3>
-				</div>
-			</div>
-			
-			<div class="help-items">
-				<assets/Help Hero.svg>
-				<h4>Basic Grids</h4>
-				<p>To create a grid, set the columns, rows, column gap, and row gap. These options determine how the grid will look, and can be previewed before adding to project in the preview area at the top of the screen. </p>
-
-				<h5>Values</h5>
-				<p>Column / row values are written as their cell sizes in whole numbers (with a pt suffix), or out of a total fraction, with the denominator of that fraction being all the numerators written added up. All cell values must be separated by a space. The value entered can also be a single number to create x amount of equally sized cells.
-
-					Column / row gaps are written as a whole number</p>
-
-				<h5>Examples</h5>
-				<p>Try the following in the column/row inputs to see how they change the grid:
-					<b><br>1 2 3 4 5<br>40pt 1<br>20pt 1 20pt<br>30pt*3 2*2 1</p></b>
-
-				<h4>Adding Grid To Project</h4>
-				<p>Once you are happy with your grid layout, you can add it into your Figma document. To do so, select the layer you want to apply the grid to, if not already selected, and click the “Apply Grid To Selected” button, you should see the grid over the selected layer, filled with the colour chosen in the “Cell Fill Colour”</p>
-
-				<h4>Merging Cells</h4>
-				<p>To create more complicated grids, you can build a custom layout by clicking on the cells (in the preview) that you want. Clicking on “Apply Grid To Selected” now would only import the cells that have been selected. You can deselect a cell by right clicking on it, and you can merge multiple cells together to create a larger tile by holding on a cell and dragging it the appropriate size.</p>
-				
-				<h4>More Help</h4>
-				<p>For more information and help, visit our website at <a target="_blank" href="https://easygrid-app.web.app/">easygrid-app.web.app</a>. Additionally, we answer all questions posted in the figma plugin comments area.</p>
-			</div>	
-		</div>
-
-		<div class="button-container-bottom" style="background-color: unset; height: 80px; padding-bottom: 16px;">
-			<div class="button-container" style="width: 60px; margin: 0 auto;">
-				<div id="close-help-button" class="button align horizontal">
-					<assets/icons/close.svg>
-				</div>
-			</div>
-		</div>
-	</div>
-	
 	<div class="layout-overlay" style="display: none;">
 		<header>
 			<img id="logo" src="https://assetbucket-a492924.s3.eu-west-2.amazonaws.com/logo.svg">
@@ -180,26 +134,20 @@
 	
 			<div class="border"></div>
 			
-			<div style="display:  flex;">
-				<div class="help-button">
-					<img src="assets/icons/open.svg" alt="">
-					<span>Open help</span>
-				</div>
-				·
-				<div class="help-button" style="cursor: pointer;">
+			<div style="display: flex; align-items: center; justify-content: center;">
+				<div style="display: flex; justify-content: center;">
+					<a href=""><img style="width: auto; height: 3.25em; user-select: none;" src="https://miro.medium.com/v2/resize:fit:1400/1*VJdus0nKuy1uNoByh5BN3w.png" alt=""></a>
+				</div>	
+				<span style="margin: 0 1em;">·</span>
+				<div class="help-button" style="cursor: pointer; width: fit-content;">
 					<img src="assets/icons/open.svg" alt="">
 					<span>Open Website</span>
 				</div>
 			</div>
+			<span style="margin-top: 1rem; display: block; font-size: 0.7em; font-weight: 500; text-align: center; color: #454545;">Made with ♥️ in London, By <a href="https://www.linkedin.com/in/eliraz-atia-819895146/">Eliraz</a>.</span>
 
 			<div class="border"></div>
 
-			<div style="display: flex; justify-content: center;">
-				<a href=""><img style="width: auto; height: 3.25em; user-select: none;" src="https://miro.medium.com/v2/resize:fit:1400/1*VJdus0nKuy1uNoByh5BN3w.png" alt=""></a>
-			</div>
-
-			<div class="border"></div>
-<!-- 
 			<div class="app-help-container">
 				<p id="app-description">To create a grid, set the columns, rows, column gap, and row gap<br>
 					<br>
@@ -209,9 +157,7 @@
 					1 2 3 4 5<br>
 					40pt 1<br>
 					20pt 1 20pt</p>
-			</div> -->
-
-			<span style="display: block; font-size: 0.7em; font-weight: 500; text-align: center; color: #454545;">Made with ♥️ in London, By <a href="https://www.linkedin.com/in/eliraz-atia-819895146/">Eliraz</a>.</span>
+			</div>
 		</div>
 	
 		<div class="button-container-hover">

@@ -327,7 +327,7 @@ img, svg { width: 22px; height: 22px; }
     text-decoration: underline;
 }
 
-
+/* 
 .help-screen {
     position: fixed;
     top: 0;
@@ -336,11 +336,8 @@ img, svg { width: 22px; height: 22px; }
     height: 100vh;
     background-color: white;
     z-index: 999;
-
     box-sizing: border-box;
     overflow-y: scroll;
-
-    visibility: hidden;
 }
 
 .help-screen .inner-content {
@@ -385,9 +382,9 @@ img, svg { width: 22px; height: 22px; }
     animation-name: closing;
     animation-duration: 0.3s;
     animation-timing-function: ease-in;
-}
+} */
 
-@keyframes opening {
+/* @keyframes opening {
     from {
         transform: translateY(50vh);
         opacity: 0;
@@ -414,7 +411,7 @@ img, svg { width: 22px; height: 22px; }
 .help-items {
     padding: 22px;
     margin-top: -76px;
-}
+} */
 
 /* .help-items .help-row { */
     /* margin-bottom: 22px; */
@@ -423,9 +420,7 @@ img, svg { width: 22px; height: 22px; }
 .help-items svg {
     width: 100%;
     height: 200px;
-    /* background-color: orange; */
 }
-
 .help-items p {
     margin: 0;
     margin-top: 8px;
@@ -461,10 +456,7 @@ img, svg { width: 22px; height: 22px; }
     animation-name: overlay-opening;
     animation-timing-function: ease-out;
     animation-duration: 0.3s;
-
-    /* transform: translateY(0); */
     opacity: 1;
-    /* animation-fill-mode: forwards; */
 }
 
 .input-overlay.closing {

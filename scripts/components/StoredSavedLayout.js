@@ -4,7 +4,6 @@ function StoredLayoutDropdown(selector, editOverlaySelector, onLayoutSelected, o
     const overlayEl = document.querySelector(editOverlaySelector)
     const overlayElList = overlayEl.querySelector('ul')
     const overlayElDoneButton = overlayEl.querySelector('.confirm-button')
-    console.log(overlayElDoneButton)
     if (!el || !overlayEl) throw new Error()
 
     // The options

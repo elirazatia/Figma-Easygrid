@@ -56,9 +56,6 @@ grid.setMergeTool('merge')
 document.querySelector('#reset-merge-button').addEventListener('click', () =>
     grid.clearCombinations())
 
-// Listen for help button
-// TODO - ADD THIS
-
 // Listen for saved value dropdown change
 const savedElementsDropdown = StoredLayoutDropdown(
     '#select-saved select',
