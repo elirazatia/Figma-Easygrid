@@ -81,8 +81,8 @@ function Grid(selector) {
         // Update the rows and column stored values
         rows = overrideRows || rows
         columns = overrideColumns || columns
-        gapX = overrideGapX || gapX
-        gapY = overrideGapY || gapY
+        gapX = (overrideGapX == null) ? gapX : overrideGapX
+        gapY = (overrideGapY == null) ? gapY : overrideGapY
 
         // Ensure that setCells has been correctly called; If not - Automatically call it
         let cellsColumnCount = Math.max(...cells.map(cell => cell.x)) + 1 // +1 as index starts at 0; and length starts at 1

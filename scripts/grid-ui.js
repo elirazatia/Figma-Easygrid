@@ -61,6 +61,7 @@ const savedElementsDropdown = StoredLayoutDropdown(
     '#select-saved select',
     '.layout-overlay',
     (newLayout) => {
+        // When selecting a layout
         if (!newLayout)
             return
     
@@ -69,10 +70,14 @@ const savedElementsDropdown = StoredLayoutDropdown(
         gapColumn.value = newLayout.layout.gapX
         gapRow.value = newLayout.layout.gapY
         rerenderGrid()
-    }, // When selecting a layout
+    },
     (newLayoutList) => {
-        
-    }, // When updating the list of layouts - Post to figma,
+        // When updating the list of layouts - Post to figma,
+        parent.postMessage({pluginMessage: {
+            type: 'event.setLayouts',
+            model: newLayoutList
+        }}, '*');
+    },
     () => {
         return {
             columns: columns.value,
@@ -84,11 +89,23 @@ const savedElementsDropdown = StoredLayoutDropdown(
 )
 
 // Listen for Figma messages
-
+onmessage = (message) => {
+    switch(message.type) {
+        case 'event.select':
+            figmaLayer.layer = message.model
+            break
+        case 'event.layouts':
+            savedElementsDropdown.storedLayouts = message.model
+            break
+        default:
+            console.info(`Posted message of type [${message.type}]; But there are no handlers for this.`)
+    }
+}
+    
 // TODO: Remove - This is a sample post
 // TODO: Needs to have a max width and scale correctly
 window.onmessage({
-    type: 'LAYER_SELECT',
+    type: 'event.select',
     model: {
         name: 'Empty',
         type: 'frame',

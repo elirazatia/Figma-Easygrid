@@ -24,22 +24,14 @@ function FigmaLayer(selectorPrefix) {
             element.innerText = value
         })
     }
-    
-    // TODO: MOVE THIS INTO grid-ui.js
-    onmessage = (message) => {
-        switch(message.type) {
-            case 'LAYER_SELECT':
-                layer = message.model
-                updateUiDescriptors()
-                observers.dispatch(layer)
-                break
-            default:
-                console.info(`Posted message of type [${message.type}]; But there are no handlers for this.`)
-        }
-    }
 
     return {
         observers,
+        set layer(newLayer) {
+            layer = newLayer
+            updateUiDescriptors()
+            observers.dispatch(layer)
+        },
         get layer() { return layer },
 
         get width() { return layer?.w || 0 },
