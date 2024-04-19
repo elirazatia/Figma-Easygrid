@@ -17,7 +17,7 @@ function rerenderGrid() {
 
     let numberOfXElements = getElementsFromString(columnString).length
     let numberOfYElements = getElementsFromString(rowString).length
-
+    
     let gapX = parseInt(gapColumn.value) || 0
     let gapY = parseInt(gapRow.value) || 0
     let targetW = figmaLayer.width - (gapX * (numberOfXElements - 1))
@@ -41,9 +41,7 @@ function rerenderGrid() {
     gapColumn,
     gapRow
 ].forEach(input => input.observers.add(rerenderGrid))
-
-// Initial run
-rerenderGrid()
+rerenderGrid() // Render the grid with the initial settings
 
 // Listen for Figma layer changes
 figmaLayer.observers.add(() => rerenderGrid())
@@ -54,8 +52,36 @@ toolSelector.observers.add(
     (newTool) => grid.setMergeTool(newTool))
 grid.setMergeTool('merge')
 
+// Listen for remove-merge button
+document.querySelector('#reset-merge-button').addEventListener('click', () =>
+    grid.clearCombinations())
+
+// Listen for help button
+// TODO - ADD THIS
+
+// Listen for saved value dropdown change
+const savedElementsDropdown = StoredLayoutDropdown(
+    '#select-saved select',
+    '.layout-overlay',
+    (newLayout) => {
+        if (!newLayout)
+            return
+    
+        columns.value = newLayout.layout.columns
+        rows.value = newLayout.layout.rows
+        gapColumn.value = newLayout.layout.gapX
+        gapRow.value = newLayout.layout.gapY
+        rerenderGrid()
+    }, // When selecting a layout
+    (newLayoutList) => {
+        
+    } // When updating the list of layouts - Post to figma
+)
+
+// Listen for Figma messages
 
 // TODO: Remove - This is a sample post
+// TODO: Needs to have a max width and scale correctly
 window.onmessage({
     type: 'LAYER_SELECT',
     model: {

@@ -259,6 +259,10 @@ function Grid(selector) {
         setMergeTool(newTool) {
             if (!['draw', 'merge'].includes(newTool)) return console.info('Invalid tool selected in Grid()')
             mergeCellTool = newTool
+        },
+        clearCombinations() {
+            setCells()
+            rerenderGrid()
         }
     }
 }

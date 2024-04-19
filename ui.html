@@ -53,22 +53,36 @@
 		</div>
 	</div>
 	
+	<div class="layout-overlay" style="display: none;">
+		<header>
+			<img id="logo" src="https://assetbucket-a492924.s3.eu-west-2.amazonaws.com/logo.svg">
+		</header>
+
+		<div style="padding: 16px;">
+			<h2>Manage Your Layouts</h2>
+			<p>These are saved across your account.</p>
+			<ul id="saved-list">
+				<li>
+					<img src="https://assetbucket-a492924.s3.eu-west-2.amazonaws.com/frame.svg" alt="">
+					<span>Example name</span>
+					<div class="fill"></div>
+					<img id="delete-button" src="assets/icons/delete-on-close.svg" alt="">
+				</li>
+			</ul>	
+
+			<div class="confirm-button-container">
+				<div class="confirm-button">Done</div>
+			</div>
+		</div>
+	</div>
+
 	<div class="body-container">
 		<div class="body-content">
 			<div class="grid-parent">
 				<header>
 					<img id="logo" src="https://assetbucket-a492924.s3.eu-west-2.amazonaws.com/logo.svg" alt="">
 				</header>
-	
 				<div id="grid-root" class="grid-container"></div>
-	
-				<div class="layer-name-container align horizontal center">
-					<span>Applying to layer:</span>
-					<div class="align horizontal">
-						<img id="layer-type" src="https://assetbucket-a492924.s3.eu-west-2.amazonaws.com/frame.svg" alt="">
-						<span id="layer-name">Layer Name</span>
-					</div>
-				</div>
 			</div>
 
 			<div class="grid-layer-info">
@@ -80,10 +94,20 @@
 					<option value="merge">Click and Drag</option>
 				</select>
 
-				<div title="Reset cell combinations" class="merge-cell-tool __small" style="border: none;">
+				<div id="reset-merge-button" title="Reset cell combinations" class="merge-cell-tool __small" style="border: none;">
 					<img src="assets/icons/clear.svg" alt="">
 				</div>
 			</div>
+
+			<div class="layer-name-container align horizontal center">
+				<span>Apply grid onto:</span>
+				<div class="align horizontal">
+					<img id="layer-type" src="https://assetbucket-a492924.s3.eu-west-2.amazonaws.com/frame.svg" alt="">
+					<span id="layer-name">Layer Name</span>
+				</div>
+			</div>
+
+			<div class="border"></div>
 
 			<div class="align horizontal input-row">
 				<div class="align horizontal">
@@ -194,7 +218,7 @@
 			<div class="button-container">
 				<div id="apply-to-element" style="flex-grow: 100" class="button colour align horizontal">
 					<img src="assets/icons/to-figma.svg" alt="">
-					<span>Apply To Selected</span>
+					<span>Insert Into Figma</span>
 				</div>
 
 				<div id="select-saved" style="background-color: rgb(232 232 232)" class="button align horizontal">
@@ -218,6 +242,7 @@
 	<script src="scripts/components/FigmaLayer.js"></script>
 	<script src="scripts/components/ConfigInput.js"></script>
 	<script src="scripts/components/Grid.js"></script>
+	<script src="scripts/components/StoredSavedLayout.js"></script>
 
 	<!-- Handlers -->
 	<script src="scripts/grid-ui.js"></script>

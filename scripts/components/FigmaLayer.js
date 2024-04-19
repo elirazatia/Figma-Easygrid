@@ -25,6 +25,7 @@ function FigmaLayer(selectorPrefix) {
         })
     }
     
+    // TODO: MOVE THIS INTO grid-ui.js
     onmessage = (message) => {
         switch(message.type) {
             case 'LAYER_SELECT':
