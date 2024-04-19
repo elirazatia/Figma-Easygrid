@@ -52,21 +52,21 @@ function Grid(selector) {
         cells = newCells
 
         // Reset all connections
-        cellConnections = [
-            {
-                type: 'merge',
-                initCell: [2,1],
-                w: 2,
-                h: 2,
-            },
-            {
-                type: 'draw',
-                cells: [
-                    [3,3],
-                    [3,4]
-                ]
-            }
-        ] // TODO: Remove test input
+        cellConnections = []
+        //     {
+        //         type: 'merge',
+        //         initCell: [2,1],
+        //         w: 2,
+        //         h: 2,
+        //     },
+        //     {
+        //         type: 'draw',
+        //         cells: [
+        //             [3,3],
+        //             [3,4]
+        //         ]
+        //     }
+        // ] // TODO: Remove test input
     }
 
     function renderGrid(
@@ -87,6 +87,7 @@ function Grid(selector) {
         // Ensure that setCells has been correctly called; If not - Automatically call it
         let cellsColumnCount = Math.max(...cells.map(cell => cell.x)) + 1 // +1 as index starts at 0; and length starts at 1
         let cellsRowCount = Math.max(...cells.map(cell => cell.y)) + 1 // See comment above
+        console.log(cellsColumnCount, cellsRowCount, columns.length, rows.length)
         if (cellsColumnCount != columns.length || cellsRowCount != rows.length) {
             setCells(
                 rows.length,
@@ -123,8 +124,8 @@ function Grid(selector) {
             let w = columns[cell.x]
             let h = rows[cell.y]
             if (mergedCell) {
-                w = xFor(cell.x + mergedCell.w - 1) - xFor(cell.x) + columns[cell.x]
-                h = yFor(cell.y + mergedCell.h - 1) - yFor(cell.y) + rows[cell.y]
+                w = xFor(cell.x + mergedCell.w - 1) - xFor(cell.x) + columns[cell.x + mergedCell.w - 1]
+                h = yFor(cell.y + mergedCell.h - 1) - yFor(cell.y) + rows[cell.y + mergedCell.h - 1]
             }
 
             const td = renderCell(
@@ -254,6 +255,10 @@ function Grid(selector) {
     })
 
     return {
-        renderGrid
+        renderGrid,
+        setMergeTool(newTool) {
+            if (!['draw', 'merge'].includes(newTool)) return console.info('Invalid tool selected in Grid()')
+            mergeCellTool = newTool
+        }
     }
 }

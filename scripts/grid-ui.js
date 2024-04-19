@@ -5,7 +5,7 @@ const figmaLayer = FigmaLayer('#layer')
 const grid = Grid('#grid-root')
 
 // Config options
-const columns = ConfigInput('#config-columns', '5')
+const columns = ConfigInput('#config-columns', '1 2 3 2 2')
 const rows = ConfigInput('#config-rows', '5')
 const gapColumn = ConfigInput('#config-column-gap', '5')
 const gapRow = ConfigInput('#config-row-gap', '5')
@@ -15,14 +15,16 @@ function rerenderGrid() {
     const columnString = columns.value
     const rowString = rows.value
 
+    let numberOfXElements = getElementsFromString(columnString).length
+    let numberOfYElements = getElementsFromString(rowString).length
+
     let gapX = parseInt(gapColumn.value) || 0
     let gapY = parseInt(gapRow.value) || 0
-    let targetW = 0
-    let targetH = 0
+    let targetW = figmaLayer.width - (gapX * (numberOfXElements - 1))
+    let targetH = figmaLayer.height - (gapY * (numberOfYElements - 1))
 
-    // TODO: Bug - Gaps only render once - rather than for each element
-    const columnElements = getDimentionsFromString(columnString, figmaLayer.width - gapX)
-    const rowElements = getDimentionsFromString(rowString, figmaLayer.height - gapY)
+    const columnElements = getDimentionsFromString(columnString, targetW)
+    const rowElements = getDimentionsFromString(rowString, targetH)
 
     grid.renderGrid(
         rowElements,
@@ -44,10 +46,14 @@ function rerenderGrid() {
 rerenderGrid()
 
 // Listen for Figma layer changes
-figmaLayer.observers.add(() => {
-    console.log('changed figma layer')
-    rerenderGrid()
-})
+figmaLayer.observers.add(() => rerenderGrid())
+
+// Listen for tool changes
+const toolSelector = ConfigInput('#grid-tool', 'merge')
+toolSelector.observers.add(
+    (newTool) => grid.setMergeTool(newTool))
+grid.setMergeTool('merge')
+
 
 // TODO: Remove - This is a sample post
 window.onmessage({

@@ -1,5 +1,5 @@
-function getDimentionsFromString(string, targetSize) {
-    // The split
+function getElementsFromString(string) {
+    // Split by space
     const split = string.split(' ')
     let elements = []
 
@@ -14,6 +14,13 @@ function getDimentionsFromString(string, targetSize) {
 
         for (let i = 0; i < counter; i++) { elements.push(value) }
     })
+
+    return elements
+}
+
+function getDimentionsFromString(string, targetSize) {
+    // Get elements from the string
+    const elements = getElementsFromString(string)
 
     // Find total fraction count
     let totalFractions = elements
