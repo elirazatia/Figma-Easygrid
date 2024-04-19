@@ -75,7 +75,15 @@ const savedElementsDropdown = StoredLayoutDropdown(
     }, // When selecting a layout
     (newLayoutList) => {
         
-    } // When updating the list of layouts - Post to figma
+    }, // When updating the list of layouts - Post to figma,
+    () => {
+        return {
+            columns: columns.value,
+            rows: rows.value,
+            gapX: gapColumn.value,
+            gapY: gapRow.value,
+        }
+    } // Get the active layout
 )
 
 // Listen for Figma messages

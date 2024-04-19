@@ -1,4 +1,4 @@
-function StoredLayoutDropdown(selector, editOverlaySelector, onLayoutSelected, onLayoutsChanged) {
+function StoredLayoutDropdown(selector, editOverlaySelector, onLayoutSelected, onLayoutsChanged, getActiveLayout) {
     const el = document.querySelector(selector)
 
     const overlayEl = document.querySelector(editOverlaySelector)
@@ -69,11 +69,20 @@ function StoredLayoutDropdown(selector, editOverlaySelector, onLayoutSelected, o
         el.value = '' // Reset the dropdown
 
         // If value is managed, open the overlay window
-        if (value === 'manage') return openOverlay()
+        if (value === 'manage') {
+            openOverlay()
+        } else if (value === 'save') {
+            const name = prompt()
+            const config = getActiveLayout()
 
-        // Perform a onLayoutSelected change
-        onLayoutSelected(
-            [...layouts, ...defaultLayouts].filter(layout => layout.name === value)[0])
+            layouts.push({ name: name, layout: config })
+            updateLayoutOption()
+            onLayoutsChanged()
+        } else {
+            // Perform a onLayoutSelected change
+            onLayoutSelected(
+                [...layouts, ...defaultLayouts].filter(layout => layout.name === value)[0])
+        }
     })
 
     // Utility functions
@@ -90,12 +99,11 @@ function StoredLayoutDropdown(selector, editOverlaySelector, onLayoutSelected, o
     }
     function makeSelectionOverlayItem(label) {
         const option = document.createElement('li')
-        option.innerHTML = `<li>
+        option.innerHTML = `
             <img src="https://assetbucket-a492924.s3.eu-west-2.amazonaws.com/frame.svg" alt="">
             <span>${label}</span>
             <div class="fill"></div>
-            <img id="delete-button" src="assets/icons/delete-on-close.svg" alt="">
-        </li>`
+            <img id="delete-button" src="assets/icons/delete-on-close.svg" alt="">`
 
         return option
     }
@@ -109,12 +117,18 @@ function StoredLayoutDropdown(selector, editOverlaySelector, onLayoutSelected, o
     // Insert managment options
     manageOptionsGroup.appendChild(makeSelectionOption('', 'Saved Layouts'))
     manageOptionsGroup.appendChild(makeSelectionOption('manage', 'Manage'))
+    manageOptionsGroup.appendChild(makeSelectionOption('save', 'Save Layout'))
     el.appendChild(manageOptionsGroup)
     el.appendChild(storedOptionsGroup)
 
     // Generate initial layouts
     function updateLayoutOption() {
-        [...defaultLayouts, ...layouts].forEach(layout => {
+        // Clear existing options
+        storedOptionsGroup.innerHTML = ''
+
+        // Loop over all layouts and render them
+        let allLayouts = [...defaultLayouts, ...layouts]
+        allLayouts.forEach(layout => {
             // Append child into the dropdown list
             storedOptionsGroup.appendChild(makeSelectionOption(layout.name, layout.name))
         })
