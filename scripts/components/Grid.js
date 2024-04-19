@@ -15,11 +15,12 @@ function Grid(selector) {
 
     // Store the cells
     let cells = []
+    let cellConnections = []
+
     let rows = []
     let columns = []
     let gapX = 0
     let gapY = 0
-    let cellCollector = {}
 
     // Methods
     function clearChildren() { Array.from(table.children).forEach(c => c.remove()) }
@@ -39,16 +40,33 @@ function Grid(selector) {
         columnCount) {
 
         let newCells = []
+        let index = 0
         for (let y = 0; y < rowCount; y++) {
             for (let x = 0; x < columnCount; x++) {
-                newCells.push(
-                    [[x, y]] // Array of arrays; Each array contains an array of indexes that this cell covers
-                )
+                newCells.push({ index, x, y })
+                index += 1
             }
         }
 
         // Store the cells
         cells = newCells
+
+        // Reset all connections
+        cellConnections = [
+            {
+                type: 'merge',
+                initCell: [0,0],
+                w: 2,
+                h: 2,
+            },
+            {
+                type: 'draw',
+                cells: [
+                    [3,3],
+                    [3,4]
+                ]
+            }
+        ] // TODO: Remove test input
     }
 
     function renderGrid(
@@ -67,8 +85,8 @@ function Grid(selector) {
         gapY = overrideGapY || gapY
 
         // Ensure that setCells has been correctly called; If not - Automatically call it
-        let cellsColumnCount = Math.max(...cells.map(cell => cell[0][0])) + 1 // +1 as index starts at 0; and length starts at 1
-        let cellsRowCount = Math.max(...cells.map(cell => cell[0][1])) + 1 // See comment above
+        let cellsColumnCount = Math.max(...cells.map(cell => cell.x)) + 1 // +1 as index starts at 0; and length starts at 1
+        let cellsRowCount = Math.max(...cells.map(cell => cell.y)) + 1 // See comment above
         if (cellsColumnCount != columns.length || cellsRowCount != rows.length) {
             setCells(
                 rows.length,
@@ -81,63 +99,81 @@ function Grid(selector) {
         const xFor = (index) => columns.slice(0, index).reduce(rFunction(gapX), 0)
         const yFor = (index) => rows.slice(0, index).reduce(rFunction(gapY), 0)
         
-        cells.forEach((cell, index) => {
-            // Create main bounds
-            cell.forEach(subcell => {
-                let xIndex = subcell[0]
-                let yIndex = subcell[1]
+        // Split cell connectinos into their two distinct types
+        let mergedCellConnections = cellConnections.filter(connection => connection.type === 'merge')
+        let drawnCellConnections = cellConnections.filter(connection => connection.type === 'draw')
 
-                const td = renderCell(
-                    xFor(xIndex),
-                    yFor(yIndex),
-                    columns[xIndex],
-                    rows[yIndex],
-                )
-                td.cell = {
-                    index: index,
-                    x: xIndex,
-                    y: yIndex
-                }
+        // Filters cells that are part of a larger - Merged cell
+        let visibleCells = cells.filter(cell => {
+            let isInitialCell = mergedCellConnections.filter(connection => connection.initCell[0] == cell.x && connection.initCell[1] == cell.y)
+            if (isInitialCell.length > 0) return true
 
-                table.appendChild(td)
-            })
-
-            // Create boxes to fill gaps
-            cell.forEach((subcell, subcellIndex) => {
-                let xIndex = subcell[0]
-                let yIndex = subcell[1]
-
-                const nextSubcell = (cells[index][subcellIndex + 1])
-                if (!nextSubcell) return
-
-                let movement = {
-                    x: nextSubcell[0] - xIndex,
-                    y: nextSubcell[1] - yIndex
-                }
-
-                let bounds = {}
-                if (movement.x) {
-                    let x = (movement.x > 0)
-                        ? xFor(xIndex) + columns[xIndex]
-                        : xFor(xIndex) - gapX
-                    bounds = {
-                        h: rows[yIndex], w: gapX,
-                        x: x, y: yFor(yIndex),
-                    }
-                } else {
-                    let y = (movement.y > 0)
-                        ? yFor(yIndex) + rows[yIndex]
-                        : yFor(yIndex) - gapY
-                    bounds = {
-                        h: gapY, w: columns[xIndex],
-                        x: xFor(xIndex), y: y,
-                    }
-                }
-
-                const td = renderCell(bounds.x, bounds.y, bounds.w, bounds.h)
-                table.appendChild(td)
-            })
+            let withinBounds = mergedCellConnections.filter(connection => 
+                isWithinBounds(cell.x, connection.initCell[0] + connection.w, connection.initCell[0]) &&
+                isWithinBounds(cell.y, connection.initCell[1] + connection.h, connection.initCell[1]))
+            return withinBounds.length == 0 
         })
+
+        // Create the primary cells
+        visibleCells.forEach(cell => {
+            // Create the primary shape
+            let mergedCell = mergedCellConnections.filter(connection =>
+                connection.initCell[0] === cell.x && connection.initCell[1] === cell.y)[0]
+
+            let w = columns[cell.x]
+            let h = rows[cell.y]
+            if (mergedCell) {
+                w = xFor(cell.x + mergedCell.w - 1) - xFor(cell.x) + columns[cell.x]
+                h = yFor(cell.y + mergedCell.h - 1) - xFor(cell.y) + rows[cell.y]
+            }
+
+            const td = renderCell(
+                xFor(cell.x),
+                yFor(cell.y),
+                w,
+                h,
+            )
+
+            // Assign to value and insert into the table
+            td.cell = cell
+            table.appendChild(td)
+        })
+
+        // Join into shapes where needed - For drawn cells
+        drawnCellConnections.forEach(connection => connection.cells.forEach((subcell, index) => {
+            let xIndex = subcell[0]
+            let yIndex = subcell[1]
+
+            const nextSubcell = (connection.cells[index + 1])
+            if (!nextSubcell) return
+
+            let movement = {
+                x: nextSubcell[0] - xIndex,
+                y: nextSubcell[1] - yIndex
+            }
+
+            let bounds = {}
+            if (movement.x) {
+                let x = (movement.x > 0)
+                    ? xFor(xIndex) + columns[xIndex]
+                    : xFor(xIndex) - gapX
+                bounds = {
+                    h: rows[yIndex], w: gapX,
+                    x: x, y: yFor(yIndex),
+                }
+            } else {
+                let y = (movement.y > 0)
+                    ? yFor(yIndex) + rows[yIndex]
+                    : yFor(yIndex) - gapY
+                bounds = {
+                    h: gapY, w: columns[xIndex],
+                    x: xFor(xIndex), y: y,
+                }
+            }
+
+            const td = renderCell(bounds.x, bounds.y, bounds.w, bounds.h)
+            table.appendChild(td)
+        }))
 
         table.style.width = `${xFor(Math.inf)}px`
         table.style.height = `${yFor(Math.inf)}px`
@@ -148,14 +184,13 @@ function Grid(selector) {
 
     })
 
-    // Cells Merge
+    // Cells Merge - TODO: These var names are awful.
     let mergeCellSession = null
-    let startCellIndex
+    // let startCellIndex
     table.addEventListener('mousedown', (e) => {
         if (e.target?.cell == null) return console.info('Did not click on cell // REMOVE THIS WARNING')
-        mergeCellSession = []
 
-        startCellIndex = e.target.cell.index
+        mergeCellSession = []
         mergeCellSession.push(e.target.cell)
     })
 
@@ -171,10 +206,11 @@ function Grid(selector) {
     })
 
     table.addEventListener('mouseup', (e) => {
-        console.log(mergeCellSession, startCellIndex)
-        cells[startCellIndex] = mergeCellSession.map(session => [session.x, session.y])
-        mergeCellSession = null
+        // Push the connections
+        cellConnections.push({ type: 'draw', cells: mergeCellSession })
 
+        // Clear the session and re-render
+        mergeCellSession = null
         renderGrid()
     })
 

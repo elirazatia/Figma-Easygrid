@@ -1,5 +1,5 @@
 // The figma layer
-const figmaLayer = FigmaLayer('#grid-root')
+const figmaLayer = FigmaLayer('#layer')
 
 // The grid
 const grid = Grid('#grid-root')
@@ -7,8 +7,8 @@ const grid = Grid('#grid-root')
 // Config options
 const columns = ConfigInput('#config-columns', '5')
 const rows = ConfigInput('#config-rows', '5')
-const gapColumn = ConfigInput('#config-column-gap', '0')
-const gapRow = ConfigInput('#config-row-gap', '0')
+const gapColumn = ConfigInput('#config-column-gap', '5')
+const gapRow = ConfigInput('#config-row-gap', '5')
 
 // Config option updates
 function rerenderGrid() {

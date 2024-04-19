@@ -1,4 +1,4 @@
-function FigmaLayer() {
+function FigmaLayer(selectorPrefix) {
     // Empty layer
     let layer = {}
     let observers = Observer()
@@ -10,7 +10,7 @@ function FigmaLayer() {
     function updateUiDescriptors() {
         Object.keys(layer).forEach(key => {
             const value = layer[key]
-            const element = document.querySelector(`#layer-${key}`)
+            const element = document.querySelector(`${selectorPrefix}-${key}`)
             if (!element) return
     
             if (key === 'type') {
