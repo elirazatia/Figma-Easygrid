@@ -182,6 +182,7 @@ function Grid(selector) {
         },
 
         setGridConfiguration,
+        get connections() { return cellConnections },
         set connections(newValue) {
             cellConnections = newValue
         },

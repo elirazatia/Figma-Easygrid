@@ -12,25 +12,22 @@ const gapRow = ConfigInput('#config-row-gap', '5')
 
 // Config option updates
 function rerenderGrid() {
-    const columnString = columns.value
-    const rowString = rows.value
+    const configuration = configurationFromInputs(
+        columns.value,
+        rows.value,
+        gapColumn.value,
+        gapRow.value,
+        figmaLayer.width,
+        figmaLayer.height,
+        350
+    )
 
-    let numberOfXElements = getElementsFromString(columnString).length
-    let numberOfYElements = getElementsFromString(rowString).length
-    
-    let gapX = parseInt(gapColumn.value) || 0
-    let gapY = parseInt(gapRow.value) || 0
-    let targetW = figmaLayer.width - (gapX * (numberOfXElements - 1))
-    let targetH = figmaLayer.height - (gapY * (numberOfYElements - 1))
-
-    const columnElements = getDimentionsFromString(columnString, targetW)
-    const rowElements = getDimentionsFromString(rowString, targetH)
-
+    // Apply configuration and render the grid
     grid.setGridConfiguration(
-        rowElements,
-        columnElements,
-        gapX,
-        gapY
+        configuration.rows,
+        configuration.columns,
+        configuration.gapX,
+        configuration.gapY
     )
     grid.renderGrid()
 }
@@ -108,7 +105,29 @@ onmessage = (message) => {
             console.info(`Posted message of type [${message.type}]; But there are no handlers for this.`)
     }
 }
-    
+
+// Post to Figma on button
+document.querySelector('#apply-to-element').addEventListener('click', () => {
+    const configuration = configurationFromInputs(
+        columns.value,
+        rows.value,
+        gapColumn.value,
+        gapRow.value,
+        figmaLayer.width,
+        figmaLayer.height,
+    )
+
+    const bounds = cellBoundsFromConfigurations(
+        configuration.rows,
+        configuration.columns,
+        configuration.gapX,
+        configuration.gapY,
+        grid.connections
+    )
+
+    console.log('Dispatch bounds to Figma event', bounds)
+})
+
 // TODO: Remove - This is a sample post
 // TODO: Needs to have a max width and scale correctly
 window.onmessage({

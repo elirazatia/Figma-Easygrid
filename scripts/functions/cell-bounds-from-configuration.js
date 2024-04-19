@@ -23,7 +23,7 @@ function cellBoundsFromConfigurations(
     }
 
     // Utility functions for determinting sizes
-    const rFunction = (gap) => (reducer, value) => { reducer = reducer + value + gap; return reducer } // TODO ITEM /// Remember to add GAPS
+    const rFunction = (gap) => (reducer, value) => { reducer = reducer + value + gap; return reducer }
     const xFor = (index) => columns.slice(0, index).reduce(rFunction(gapX), 0)
     const yFor = (index) => rows.slice(0, index).reduce(rFunction(gapY), 0)
 
