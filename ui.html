@@ -62,60 +62,27 @@
 	
 				<div id="grid-root" class="grid-container"></div>
 	
-				<div class="align horizontal center">
+				<div class="layer-name-container align horizontal center">
+					<span>Applying to layer:</span>
 					<div class="align horizontal">
 						<img id="layer-type" src="https://assetbucket-a492924.s3.eu-west-2.amazonaws.com/frame.svg" alt="">
 						<span id="layer-name">Layer Name</span>
 					</div>
-					<div class="fill"></div>
-					<div id="clear-merge" class="align horizontal">
-						<img src="assets/icons/clear.svg" alt="">
-						<span>Clear Merged Cells</span>
-					</div>
 				</div>
 			</div>
 
-			<div class="grid-layer-info" style="
-				margin-top: -1.35em;
-				z-index: 99;
-				display: grid;
-				grid-template-columns: repeat(4, 1fr);
-				column-gap: 0.35em;
-				background-color: #f1f1f1;
-				padding: 0em 0.35em;
-				border-radius: 0.35em;
-				position: relative;">
+			<div class="grid-layer-info">
+				<img id="up-arrow" src="assets/icons/arrow-up.svg">
+				<span style="margin-right: 0.5em;">Combine Cells: </span>
+				<div class="fill"></div>
+				<select id="grid-tool">
+					<option value="draw">Freeform</option>
+					<option value="merge">Click and Drag</option>
+				</select>
 
-				<img src="assets/icons/arrow-up.svg" style="
-					position: absolute;
-					left: 1em;
-					bottom: 100%;
-					height: fit-content;">
-
-				<div style="position: relative;" class="align horizontal input-row">
-					<div style="position: absolute;" class="align horizontal">
-						<img src="assets/icons/x.svg" alt="">
-					</div>
-					<input readonly id="layer-x" class="fill wide-input" type="text" value="100">
+				<div title="Reset cell combinations" class="merge-cell-tool __small" style="border: none;">
+					<img src="assets/icons/clear.svg" alt="">
 				</div>
-				<div style="position: relative;" class="align horizontal input-row">
-					<div style="position: absolute;" class="align horizontal">
-						<img src="assets/icons/y.svg" alt="">
-					</div>
-					<input readonly id="layer-y" class="fill wide-input" type="text" value="200">
-				</div>		
-				<div style="position: relative;" class="align horizontal input-row">
-					<div style="position: absolute;" class="align horizontal">
-						<img src="assets/icons/w.svg" alt="">
-					</div>
-					<input readonly id="layer-w" class="fill wide-input" type="text" value="100">
-				</div>
-				<div style="position: relative;" class="align horizontal input-row">
-					<div style="position: absolute;" class="align horizontal">
-						<img src="assets/icons/h.svg" alt="">
-					</div>
-					<input readonly id="layer-h" class="fill wide-input" type="text" value="200">
-				</div>		
 			</div>
 
 			<div class="align horizontal input-row">
@@ -167,14 +134,14 @@
 	
 			<div class="align horizontal input-row">
 				<div class="align horizontal">
-					<img src="assets/icons/fill.svg" alt="">
+					<img src="assets/icons/autolayout.svg" alt="">
 					<span>Autolayout Type</span>
 				</div>
 				<div class="fill"></div>
 				<select class="wide-input" id="">
-					<option value="">None</option>
-					<option value="">Wrapping Grid</option>
-					<option value="">On row</option>
+					<option value="none">None</option>
+					<option value="wrapping">Wrapping Grid</option>
+					<option value="on-row">On row</option>
 				</select>
 			</div>
 
@@ -188,30 +155,27 @@
 			</div>
 	
 			<div class="border"></div>
-
-			<div style="display: none;" class="new-feature-card">
-				<div class="card-close">
-					<assets/icons/close_black.svg>
+			
+			<div style="display:  flex;">
+				<div class="help-button">
+					<img src="assets/icons/open.svg" alt="">
+					<span>Open help</span>
 				</div>
-				<div class="card-content">
-					<span class="card-title">Whats new?</span>
-					<span class="card-subtitle">Version 1.1</span>
-					<ul>
-						<li>
-							🎛 <b>Autopopulate — </b> you can now select more then one layer to autopopulate the layout with the other selected layers / components
-						</li>
-						<li>
-							💾  <b>Saving — </b> Save your layout and reuse them in other Figma projects
-						</li>
-					</ul>
+				·
+				<div class="help-button" style="cursor: pointer;">
+					<img src="assets/icons/open.svg" alt="">
+					<span>Open Website</span>
 				</div>
 			</div>
 
-			<div class="help-button">
-				<img src="assets/icons/open.svg" alt="">
-				<span>Open help</span>
+			<div class="border"></div>
+
+			<div style="display: flex; justify-content: center;">
+				<a href=""><img style="width: auto; height: 3.25em; user-select: none;" src="https://miro.medium.com/v2/resize:fit:1400/1*VJdus0nKuy1uNoByh5BN3w.png" alt=""></a>
 			</div>
 
+			<div class="border"></div>
+<!-- 
 			<div class="app-help-container">
 				<p id="app-description">To create a grid, set the columns, rows, column gap, and row gap<br>
 					<br>
@@ -221,13 +185,15 @@
 					1 2 3 4 5<br>
 					40pt 1<br>
 					20pt 1 20pt</p>
-			</div>
+			</div> -->
+
+			<span style="display: block; font-size: 0.7em; font-weight: 500; text-align: center; color: #454545;">Made with ♥️ in London, By <a href="https://www.linkedin.com/in/eliraz-atia-819895146/">Eliraz</a>.</span>
 		</div>
 	
 		<div class="button-container-hover">
 			<div class="button-container">
 				<div id="apply-to-element" style="flex-grow: 100" class="button colour align horizontal">
-					<assets/icons/apply-cells.svg>
+					<img src="assets/icons/to-figma.svg" alt="">
 					<span>Apply To Selected</span>
 				</div>
 
