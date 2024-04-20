@@ -26,7 +26,7 @@ function StoredLayoutDropdown(selector, overlayComponent, onLayoutSelected, onLa
             }
         },
         {
-            name: 'iPhone 15 Safe Area',
+            name: 'iPhone - Safe Area',
             layout: {
                 rows: '59pt 1 34pt',
                 columns: '1',
@@ -36,16 +36,13 @@ function StoredLayoutDropdown(selector, overlayComponent, onLayoutSelected, onLa
             }
         },
         {
-            name: 'Golden Ratio',
+            name: 'Bootstrap 12 Columns',
             layout: {
-                rows: '8',
-                columns: '13',
+                rows: '1',
+                columns: '12',
                 gapX: '0',
                 gapY: '0',
-                connections: [
-                    { type: 'merge', initCell: [0,0], w: 8 , h: 8 },
-                    { type: 'merge', initCell: [8,0], w: 5 , h: 5 }
-                ]
+                connections: []
             }
         },
     ]
@@ -92,7 +89,7 @@ function StoredLayoutDropdown(selector, overlayComponent, onLayoutSelected, onLa
                     updateLayoutOption()
                     onLayoutsChanged(layouts)
                 }
-            ).input('', 'New Layout')
+            ).input('', 'New layout name...')
         } else {
             // Perform a onLayoutSelected change
             onLayoutSelected(
@@ -121,7 +118,7 @@ function StoredLayoutDropdown(selector, overlayComponent, onLayoutSelected, onLa
     // Insert managment options
     manageOptionsGroup.appendChild(makeSelectionOption('', 'Saved Layouts'))
     manageOptionsGroup.appendChild(makeSelectionOption('manage', 'Manage'))
-    manageOptionsGroup.appendChild(makeSelectionOption('save', 'Save Layout'))
+    manageOptionsGroup.appendChild(makeSelectionOption('save', 'Save Current Layout'))
     el.appendChild(manageOptionsGroup)
     el.appendChild(storedOptionsGroup)
 

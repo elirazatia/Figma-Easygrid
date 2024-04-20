@@ -141,7 +141,11 @@ document.querySelector('#apply-to-element').addEventListener('click', () => {
 
     parent.postMessage({ pluginMessage: {
         type: 'event.applyToLayer',
-        model: bounds.bounds
+        model: {
+            bounds: bounds.bounds,
+            fill: document.querySelector('#cell-fill').value,
+            replace: document.querySelector('#replace-selected').checked
+        }
     }}, '*')
 
     console.log('Dispatch bounds to Figma event', bounds)
