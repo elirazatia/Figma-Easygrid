@@ -1,10 +1,6 @@
-function StoredLayoutDropdown(selector, editOverlaySelector, onLayoutSelected, onLayoutsChanged, getActiveLayout) {
+function StoredLayoutDropdown(selector, overlayComponent, onLayoutSelected, onLayoutsChanged, getActiveLayout) {
     const el = document.querySelector(selector)
-
-    const overlayEl = document.querySelector(editOverlaySelector)
-    const overlayElList = overlayEl.querySelector('ul')
-    const overlayElDoneButton = overlayEl.querySelector('.confirm-button')
-    if (!el || !overlayEl) throw new Error()
+    if (!el || !overlayComponent) throw new Error()
 
     // The options
     let layouts = []
@@ -54,14 +50,6 @@ function StoredLayoutDropdown(selector, editOverlaySelector, onLayoutSelected, o
         },
     ]
 
-    // Overlay functions
-    function openOverlay() {
-        overlayEl.style.display = 'inline-block'
-    }
-    function closeOverlay() {
-        overlayEl.style.display = 'none'
-    }
-
     // Listen for dropdown changes
     el.addEventListener('change', (e) => {
         const value = el.value
@@ -69,14 +57,42 @@ function StoredLayoutDropdown(selector, editOverlaySelector, onLayoutSelected, o
 
         // If value is managed, open the overlay window
         if (value === 'manage') {
-            openOverlay()
-        } else if (value === 'save') {
-            const name = prompt()
-            const config = getActiveLayout()
+            // Generate the overlay
+            const overlay = overlayComponent.present(
+                'Manage Your Layouts',
+                'These are saved across your account.'
+            )
 
-            layouts.push({ name: name, layout: config })
-            updateLayoutOption()
-            onLayoutsChanged()
+            // Add all the layout options
+            layouts.forEach(layout => {
+                overlay.listOptions.add('layout', layout, {
+                    'delete': (theElement) => {
+                        // Filter and save the new filter list
+                        layouts = layouts.filter(layout => layout.name != layout.name)
+                        onLayoutsChanged(layouts)
+                        updateLayoutOption()
+
+                        // Remove the element from the preview list
+                        theElement.remove()
+                    }
+                })
+            })
+        } else if (value === 'save') {
+            overlayComponent.present(
+                'Save Layout',
+                'Give your layout a memorable name.',
+                (response) => {
+                    // Validate the name
+                    const name = response.input
+                    if (!name) return
+
+                    // Store into the layouts array and notify the handler to store into Figma local storage
+                    const config = getActiveLayout()
+                    layouts.push({ name: name, layout: config })
+                    updateLayoutOption()
+                    onLayoutsChanged(layouts)
+                }
+            ).input('', 'New Layout')
         } else {
             // Perform a onLayoutSelected change
             onLayoutSelected(
@@ -96,20 +112,9 @@ function StoredLayoutDropdown(selector, editOverlaySelector, onLayoutSelected, o
         option.innerText = label
         return option
     }
-    function makeSelectionOverlayItem(label) {
-        const option = document.createElement('li')
-        option.innerHTML = `
-            <img src="https://assetbucket-a492924.s3.eu-west-2.amazonaws.com/frame.svg" alt="">
-            <span>${label}</span>
-            <div class="fill"></div>
-            <img id="delete-button" src="assets/icons/delete-on-close.svg" alt="">`
-
-        return option
-    }
-
+   
     // Clear and make initial configuration
     el.innerHTML = ''
-    overlayElList.innerHTML = ''
     const manageOptionsGroup = makeSelectionGroup('Options')
     const storedOptionsGroup = makeSelectionGroup('Saved Configurations')
 
@@ -131,20 +136,7 @@ function StoredLayoutDropdown(selector, editOverlaySelector, onLayoutSelected, o
             // Append child into the dropdown list
             storedOptionsGroup.appendChild(makeSelectionOption(layout.name, layout.name))
         })
-
-        layouts.forEach(layout => {
-            // Append child into the overlay layer
-            const overlayOption = makeSelectionOverlayItem(layout.name)
-            overlayOption.querySelector('#delete-button').addEventListener('click', () => {
-                alert('Delete')
-            })
-            overlayElList.appendChild(overlayOption)
-        })
     }
-
-    // Add event listener to dismiss overlay
-    overlayElDoneButton.addEventListener('click', () => 
-        closeOverlay())
 
     // Perform initial layouts update
     updateLayoutOption()
@@ -155,6 +147,7 @@ function StoredLayoutDropdown(selector, editOverlaySelector, onLayoutSelected, o
                 return layouts = []
 
             layouts = newLayouts
+            updateLayoutOption()
         }
     }
 }

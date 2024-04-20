@@ -25,7 +25,7 @@ header {
     justify-content: center;
     
     padding-bottom: 16px;
-    padding-right: 12px;
+    padding-right: 12px;   
 }
 
 header #logo {
@@ -116,6 +116,7 @@ img, svg { width: 22px; height: 22px; }
 .grid-parent .grid-container .table .row { display: flex; }
 .grid-parent .grid-container .table .cell.__hover {
     background-color: #737c85;
+    z-index: 99;
 }
 .grid-parent .grid-container .table .cell {
     position: absolute;
@@ -123,7 +124,7 @@ img, svg { width: 22px; height: 22px; }
     height: 100%;
     margin: 0;
     padding: 0;
-    cursor: move;
+    cursor: crosshair;
 }
 
 .grid-container .display-container {
@@ -198,6 +199,7 @@ img, svg { width: 22px; height: 22px; }
     padding: 0 12px;
     padding-bottom: 22px;
     overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .button-container-bottom {
@@ -377,12 +379,32 @@ img, svg { width: 22px; height: 22px; }
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: #fffffff2;
+    background-color: #000000cf;
     z-index: 999;
     padding-top: 4em;
+
+    --border: #eeeeee;
+    --offset: 0.5em;
+}
+
+.layout-content header { border-bottom: 1px solid var(--border); }
+.layout-content {
+    background-color: white;
+    border: 1px solid var(--border);
+    border-radius: 1em;
+
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    left: var(--offset);
+    width: calc(100% - var(--offset) * 2);
+    padding-top: 2em;
+    padding-bottom: 1em;
+    text-align: center;
 }
 
 .layout-overlay h2 {
+    margin-top: 0.5em;
     margin-bottom: 0;
 }
 .layout-overlay p {
@@ -391,37 +413,44 @@ img, svg { width: 22px; height: 22px; }
     margin-top: 0;
     margin-bottom: 2em;
 }
-
 .layout-overlay ul {
     padding: 0;
     margin: 0;
     list-style-type: none;
 }
 
+.layout-overlay li span { margin-left: 0.85rem; }
+.layout-overlay li #delete-button { display: none; cursor: pointer; }
+.layout-overlay li:hover #delete-button { display: inline-block; }
+
 .layout-overlay li:not(:last-child) { border-bottom: 1px solid rgb(221 221 221); }
-.layout-overlay li:first-child { border-top-left-radius: 0.75em; border-top-right-radius: 0.75em; }
-.layout-overlay li:last-child { border-bottom-left-radius: 0.75em; border-bottom-right-radius: 0.75em; }
-.layout-overlay li {
+.layout-overlay li:first-child { border-top-left-radius: 0.75rem; border-top-right-radius: 0.75rem; }
+.layout-overlay li:last-child { border-bottom-left-radius: 0.75rem; border-bottom-right-radius: 0.75rem; }
+.layout-overlay input { width: 100%; }
+.layout-overlay li,
+.layout-overlay input {
+    text-align: left;
     align-items: center;
     display: flex;
     padding: 1em;
     background-color: #efefef;
 }
-.layout-overlay li span { margin-left: 0.85em; }
-
-.layout-overlay li #delete-button { display: none; cursor: pointer; }
-.layout-overlay li:hover #delete-button { display: inline-block; }
 
 .layout-overlay .confirm-button-container {
     display: flex;
     justify-content: center;
+    margin-top: 1.5em;
 }
 .layout-overlay .confirm-button {
     padding: 0.75em 1.5em;
     background-color: rgba(0, 0, 0, 0.15);
     border-radius: 500px;
 
-    margin-top: 2em;
     color: black;
     cursor: pointer;
+}
+.layout-overlay .cancel-button:hover { text-decoration: underline; }
+.layout-overlay .cancel-button {
+    cursor: pointer;
+    margin-top: 1em;
 }

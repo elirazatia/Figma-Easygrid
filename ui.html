@@ -6,26 +6,31 @@
 
 	<link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body>	
 	<div class="layout-overlay" style="display: none;">
-		<header>
-			<img id="logo" src="https://assetbucket-a492924.s3.eu-west-2.amazonaws.com/logo.svg">
-		</header>
+		<div class="layout-content">
+			<header>
+				<img id="logo" src="https://assetbucket-a492924.s3.eu-west-2.amazonaws.com/logo.svg">
+			</header>
+	
+			<div style="padding: 16px;">
+				<h2 id="overlay-title">Manage Your Layouts</h2>
+				<p id="overlay-message">These are saved across your account.</p>
+				<ul id="saved-list">
+					<li>
+						<img src="https://assetbucket-a492924.s3.eu-west-2.amazonaws.com/frame.svg" alt="">
+						<span>Example name</span>
+						<div class="fill"></div>
+						<img id="delete-button" src="assets/icons/delete-on-close.svg" alt="">
+					</li>
+				</ul>
 
-		<div style="padding: 16px;">
-			<h2>Manage Your Layouts</h2>
-			<p>These are saved across your account.</p>
-			<ul id="saved-list">
-				<li>
-					<img src="https://assetbucket-a492924.s3.eu-west-2.amazonaws.com/frame.svg" alt="">
-					<span>Example name</span>
-					<div class="fill"></div>
-					<img id="delete-button" src="assets/icons/delete-on-close.svg" alt="">
-				</li>
-			</ul>	
-
-			<div class="confirm-button-container">
-				<div class="confirm-button">Done</div>
+				<input type="text">
+	
+				<div class="confirm-button-container">
+					<div class="confirm-button">Done</div>
+				</div>
+				<span class="cancel-button">Cancel</span>
 			</div>
 		</div>
 	</div>
@@ -190,6 +195,7 @@
 	<!-- Components -->
 	<script src="scripts/components/Observer.js"></script>
 	<script src="scripts/components/FigmaLayer.js"></script>
+	<script src="scripts/components/Overlay.js"></script>
 	<script src="scripts/components/ConfigInput.js"></script>
 	<script src="scripts/components/Grid.js"></script>
 	<script src="scripts/components/StoredSavedLayout.js"></script>

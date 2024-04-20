@@ -4,6 +4,12 @@ const figmaLayer = FigmaLayer('#layer')
 // The grid
 const grid = Grid('#grid-root')
 
+// The overlay controller
+const overlay = Overlay(
+    '.layout-overlay',
+    '.layout-content'
+)
+
 // Config options
 const columns = ConfigInput('#config-columns', '2')
 const rows = ConfigInput('#config-rows', '2')
@@ -60,7 +66,7 @@ document.querySelector('#reset-merge-button')
 // Listen for saved value dropdown change
 const savedElementsDropdown = StoredLayoutDropdown(
     '#select-saved select',
-    '.layout-overlay',
+    overlay,
     (newLayout) => {
         // When selecting a layout
         if (!newLayout)
@@ -88,6 +94,7 @@ const savedElementsDropdown = StoredLayoutDropdown(
             rows: rows.value,
             gapX: gapColumn.value,
             gapY: gapRow.value,
+            connections: grid.connections
         }
     } 
 )
