@@ -8,7 +8,6 @@ function cellBoundsFromConfigurations(
     if (!rows || !columns)
         throw new Error()
 
-    console.log(rows, columns, gapX, gapY, cellConnections)
     // Empty bounds
     let bounds = []
 
@@ -55,7 +54,6 @@ function cellBoundsFromConfigurations(
         let w = columns[cell.x]
         let h = rows[cell.y]
         if (mergedCell) {
-            console.log(mergedCell)
             w = xFor(cell.x + mergedCell.w - 1) - xFor(cell.x) + columns[cell.x + mergedCell.w - 1]
             h = yFor(cell.y + mergedCell.h - 1) - yFor(cell.y) + rows[cell.y + mergedCell.h - 1]
         }
@@ -75,6 +73,7 @@ function cellBoundsFromConfigurations(
         connection.cells.forEach((subcell, index) => {
             let xIndex = subcell[0]
             let yIndex = subcell[1]
+            if (xIndex == null || yIndex == null) return
 
             // Generate the primary bound
             connectionBounds.push({

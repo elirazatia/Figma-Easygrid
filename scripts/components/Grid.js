@@ -60,8 +60,7 @@ function Grid(selector) {
             cellConnections
         )
 
-        console.log('with cell connections', cellConnections)
-
+        
         // Insert all the bounds
         bounds.bounds.forEach((boundContainer, boundIndex) => boundContainer.forEach(subchild => {
             const td = renderCell(
@@ -113,7 +112,6 @@ function Grid(selector) {
             move(cell) {
                 mergeCellSession.offsetX = cell.x - mergeCellSession.initCell[0]
                 mergeCellSession.offsetY = cell.y - mergeCellSession.initCell[1]
-                console.log(mergeCellSession.offsetY)
             },
             release() {
                 if (mergeCellSession.offsetX === 0 && mergeCellSession.offsetY === 0)

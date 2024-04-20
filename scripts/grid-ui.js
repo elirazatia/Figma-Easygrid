@@ -94,12 +94,19 @@ const savedElementsDropdown = StoredLayoutDropdown(
 
 // Listen for Figma messages
 onmessage = (message) => {
-    switch(message.type) {
+    switch(message.data.pluginMessage.type) {
         case 'event.select':
-            figmaLayer.layer = message.model
+            figmaLayer.layer = message.data.pluginMessage.model || {
+                name: 'None Specified',
+                type: 'None',
+                x: 0,
+                y: 0,
+                w: 100,
+                h: 100
+            }
             break
         case 'event.layouts':
-            savedElementsDropdown.storedLayouts = message.model
+            savedElementsDropdown.storedLayouts = message.data.pluginMessage.model || []
             break
         default:
             console.info(`Posted message of type [${message.type}]; But there are no handlers for this.`)
@@ -125,19 +132,18 @@ document.querySelector('#apply-to-element').addEventListener('click', () => {
         grid.connections
     )
 
+    parent.postMessage({ pluginMessage: {
+        type: 'event.applyToLayer',
+        model: bounds.bounds
+    }}, '*')
+
     console.log('Dispatch bounds to Figma event', bounds)
 })
 
-// TODO: Remove - This is a sample post
-// TODO: Needs to have a max width and scale correctly
+// Inital selection
 window.onmessage({
-    type: 'event.select',
-    model: {
-        name: 'Empty',
-        type: 'frame',
-        x: 100,
-        y: 200, 
-        w: 150,
-        h: 250
-    }
+    data: { pluginMessage: {
+        type: 'event.select',
+        model: null
+    }}
 })
