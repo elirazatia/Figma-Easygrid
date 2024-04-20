@@ -275,7 +275,7 @@ img, svg { width: 22px; height: 22px; }
     margin-top: 2em;
 }
 
-#app-description .heading img { width: 1.35em; margin-left: 0.5em; transform: translateY(2px); height: fit-content; }
+#app-description .heading .the-arrow { display: inline; width: 1.35em; margin-left: 0.5em; transform: translateY(2px); height: fit-content; }
 #app-description .heading {
     display: flex;
     justify-content: center;
@@ -283,7 +283,7 @@ img, svg { width: 22px; height: 22px; }
 
     font-weight: 500;
     color: black;
-    margin-bottom: 0.35em;
+    margin-bottom: 0.5em;
 }
 
 .border {
