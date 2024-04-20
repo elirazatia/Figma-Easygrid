@@ -108,13 +108,20 @@ function Grid(selector) {
         ]
     }
 
+    const resetMoveGesture = () => {
+        swipeGesture.reset()
+        mergeCellSession = null
+    }
+
     const toolEvents = {
         draw: {
             init(initCell, mouseEvent) {
                 swipeGesture.strokeStyle = "red";
                 swipeGesture.moveTo(...mouseEventCoordinateToTable(mouseEvent))
 
-                return [initCell.x, initCell.y]
+                return [
+                    { x: initCell.x, y: initCell.y }
+                ]
             },
             move(cell, mouseEvent) {
                 swipeGesture.lineTo(...mouseEventCoordinateToTable(mouseEvent))
@@ -131,8 +138,8 @@ function Grid(selector) {
             init(initCell, mouseEvent) { return {
                 initMousePosition: mouseEventCoordinateToTable(mouseEvent),
                 initCell: [initCell.x, initCell.y],
-                offsetX: 1,
-                offsetY: 1
+                offsetX: 0,
+                offsetY: 0
             } },
             move(cell, mouseEvent) {
                 const mousePosition = mouseEventCoordinateToTable(mouseEvent)
@@ -168,11 +175,30 @@ function Grid(selector) {
         }
     }
 
+    const isCellAlreadyConnected = (cell) => {
+        if (cell.x == null || cell.y == null)
+            return true
+
+        // Lazy solution; But prevents many bugs
+        let connectionsForCell = cellConnections.filter(connection => {
+            if (connection.type === 'draw') {
+                return connection.cells.find(connectionCell => cell.x === connectionCell[0] && cell.y === connectionCell[1])
+            } else if (connection.type === 'merge') {
+                return (connection.initCell[0] === cell.x &&
+                    connection.initCell[1] === cell.y)
+            }   
+        })
+
+        return connectionsForCell.length > 0
+    }
+
     table.addEventListener('mousedown', (e) => {
         // Return if not clicked down on a grid cell
         if (e.target?.cell == null) return
 
         // Generate initial merge session
+        if (isCellAlreadyConnected(e.target.cell)) return resetMoveGesture()
+        
         mergeCellSession = toolEvents[mergeCellTool].init(e.target.cell, e)
         setHoverEffectEl([])
     })
@@ -182,8 +208,7 @@ function Grid(selector) {
         setHoverEffectEl([])
         
         // Clear effects
-        swipeGesture.reset()
-        mergeCellSession = null
+        resetMoveGesture()
     })
 
     table.addEventListener('mousemove', (e) => {
@@ -198,20 +223,38 @@ function Grid(selector) {
             // Return if user is not pressing down
             return
         }
+
+        // If no cell - Then dont continue
         if (e.target?.cell == null) return
+
+        // If moving to already combined cell; Cancel the operation
+        if (isCellAlreadyConnected(e.target.cell)) return resetMoveGesture()
 
         // Perform tool function
         toolEvents[mergeCellTool].move(e.target.cell, e)
     })
 
     table.addEventListener('mouseup', (e) => {
+        // Ignore if no interaction
+        if (!mergeCellSession) return
+
+        // Dont merge if there is no offset
+        if (mergeCellSession.initCell &&
+            (mergeCellSession.offsetX === 0 &&
+            mergeCellSession.offsetY === 0) || 
+            [mergeCellSession.offsetX, mergeCellSession.offsetY].includes(NaN)) return resetMoveGesture()
+
+        // Dont merge if there is only one cell selected
+        if (Array.isArray(mergeCellSession) &&
+            mergeCellSession.length === 1) return resetMoveGesture()
+
         // Push the connections
         const newConnectionModel = toolEvents[mergeCellTool].release(e)
         cellConnections.push(newConnectionModel)
         cellConnections = cellConnections.filter(i => (i)) // Filter out the new model if it returns new - i.e. Invalid
 
         // Clear the session and re-render
-        mergeCellSession = null
+        resetMoveGesture()
         renderGrid()
     })
 

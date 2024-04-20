@@ -25,7 +25,7 @@ function rerenderGrid() {
         gapRow.value,
         figmaLayer.width,
         figmaLayer.height,
-        350
+        300
     )
 
     // Apply configuration and render the grid

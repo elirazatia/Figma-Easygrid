@@ -1,0 +1,19 @@
+{
+  "name": "easygrid-test",
+  "id": "1363175331911357298",
+  "api": "1.0.0",
+  "main": "code.js",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "documentAccess": "dynamic-page",
+  "editorType": [
+    "figma"
+  ],
+  "ui": "ui.html",
+  "networkAccess": {
+    "allowedDomains": [
+      "https://assetbucket-a492924.s3.eu-west-2.amazonaws.com",
+      "https://miro.medium.com"
+    ]
+  }
+}
