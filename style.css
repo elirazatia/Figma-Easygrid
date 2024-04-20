@@ -24,8 +24,7 @@ header {
     align-items: center;
     justify-content: center;
     
-    padding-bottom: 16px;
-    padding-right: 12px;   
+    padding-bottom: 1.5em;
 }
 
 header #logo {
@@ -89,13 +88,11 @@ img, svg { width: 22px; height: 22px; }
     position: relative;
     width: calc(100% + 24px);
     left: -12px;
-
     margin-bottom: 8px;
     background-color: #f9f9f9;
     padding: 14px;
     box-sizing: border-box;
-    padding-bottom: 2em;
-    border-bottom: 2px #3397f0 solid;
+    padding-bottom: 2.5em;
 }
 
 .grid-parent .grid-container {
@@ -112,6 +109,7 @@ img, svg { width: 22px; height: 22px; }
     position: relative;
     border-collapse: collapse;
 }
+
 
 .grid-parent .grid-container .table .row { display: flex; }
 .grid-parent .grid-container .table .cell.__hover {
@@ -149,18 +147,25 @@ img, svg { width: 22px; height: 22px; }
 .layer-name-container { margin-top: 1em; }
 .layer-name-container:hover #layer-name { text-decoration: underline; }
 .grid-layer-info {
-    z-index: 99;
-    background-color: #3397f0;
-    color: white;
-    padding: 0.5em 1em;
-    border-radius: 20em;
-    position: relative;
-    width: 80%;
-    margin: 0 auto;
-    margin-top: -2em;
+	z-index: 99;
+	background-color: #a7bacb;
+	color: white;
+	padding: 0.5em 1.5em;
+	position: relative;
+	margin: 0 auto;
+	margin-top: -2em;
+	display: flex;
+	align-items: center;
+	left: -12px;
+	box-sizing: border-box;
+	width: calc(100% + 24px);}
 
-    display: flex;
-    align-items: center;
+.grid-layer-info #reset-merge-button:hover { background-color: rgba(255,255,255,0.2); }
+.grid-layer-info #reset-merge-button {
+    padding: 0.25em;
+    border-radius: 100em;
+    cursor: pointer;
+    transition: background-color 200ms;
 }
 
 .grid-layer-info #up-arrow svg,
@@ -171,6 +176,7 @@ img, svg { width: 22px; height: 22px; }
     transform: translateX(-50%);
     bottom: 100%;
 
+    opacity: 0.8;
     display: flex;
 }
 
@@ -265,8 +271,19 @@ img, svg { width: 22px; height: 22px; }
     text-align: center;
     font-size: 12px;
     line-height: 1.8;
-    opacity: 0.45;
-    margin-top: 22px;
+    color: #8c8c8c;
+    margin-top: 2em;
+}
+
+#app-description .heading img { width: 1.35em; margin-left: 0.5em; transform: translateY(2px); height: fit-content; }
+#app-description .heading {
+    display: flex;
+    justify-content: center;
+	align-items: center;
+
+    font-weight: 500;
+    color: black;
+    margin-bottom: 0.35em;
 }
 
 .border {
