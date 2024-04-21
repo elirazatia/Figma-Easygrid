@@ -56,14 +56,12 @@ figma.ui.onmessage = (message) => {
                 node.y = item.y
                 node.resize(item.w, item.h)
             }
-            const newShape = () => {
-                const rect = figma.createRectangle()
-                rect.fills = [{ type: 'SOLID', color: figma.util.rgb(fillColor) }]
-                return rect
-            }
+            const newShape = () => figma.createRectangle()
+            const setFills = (rect) => (rect.fills = [{ type: 'SOLID', color: figma.util.rgb(fillColor) }])
 
             // Created layers
             let newLayers = []
+            let newUnions = []
 
             // Replacement layers
             let toReplace = figma.currentPage.selection.filter(node => node.id !== rootLayer.id)
@@ -78,6 +76,11 @@ figma.ui.onmessage = (message) => {
                         ? toReplace[replaceIndex].clone()
                         : newShape()
 
+                    // Set fill if not a cloned
+                    if (!willReplaceUsingSelection)
+                        setFills(newNode)
+
+                    // Position and append the new element
                     positionShape(newNode, item[0])
                     newLayers.push(newNode)
 
@@ -88,20 +91,20 @@ figma.ui.onmessage = (message) => {
                 } else {
                     // Join into union as they are complex shapes
                     let boolean = figma.createBooleanOperation()
-                    boolean.fills = [{ type: 'SOLID', color: figma.util.rgb(fillColor) }]
                     boolean.booleanOperation = 'UNION'
                     item.forEach(element => {
                         const newNode = newShape(element)
                         positionShape(newNode, element)
                         boolean.appendChild(newNode)
                     })
+
+                    newUnions.push(boolean)
                     newLayers.push(boolean)
                 }
             })
 
             // Delete if boolean is set to true
-            if (willDeleteLayer)
-                rootLayer.remove()
+            if (willDeleteLayer) rootLayer.remove()
 
             // Group together to the nearest parent
             const group = figma.group(
@@ -110,6 +113,14 @@ figma.ui.onmessage = (message) => {
             )
             group.x = 0
             group.y = 0
+
+            // Flatten all union nodes
+            newUnions.forEach(union => {
+                setFills(figma.flatten(union.children, group))
+                union.remove()
+            })
+
+            // Scroll into view
             figma.viewport.scrollAndZoomIntoView([group])
 
             break
